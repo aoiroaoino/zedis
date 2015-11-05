@@ -2,6 +2,8 @@ package zedis.free.commands
 
 import scala.collection.JavaConversions
 
+import java.util.{Map, Set, List}
+
 import scalaz.{Free, Kleisli, Monad}
 import redis.clients.jedis.Jedis
 
@@ -27,6 +29,9 @@ trait JedisCommands {
     }
     case class JDel(keys: String*) extends JedisCommandOp[Long] {
       def command[M[_]: Monad] = lift(_.del(keys: _*))
+    }
+    case class JDel1(key: String) extends JedisCommandOp[Long] {
+      def command[M[_]: Monad] = lift(_.del(key))
     }
     case class JEcho(string: String) extends JedisCommandOp[String] {
       def command[M[_]: Monad] = lift(_.echo(string))
@@ -55,20 +60,35 @@ trait JedisCommands {
     case class JHget(key: String, field: String) extends JedisCommandOp[String] {
       def command[M[_]: Monad] = lift(_.hget(key, field))
     }
+    case class JHgetAll(key: String) extends JedisCommandOp[Map[String, String]] {
+      def command[M[_]: Monad] = lift(_.hgetAll(key))
+    }
     case class JHincrBy(key: String, field: String, value: Long) extends JedisCommandOp[Long] {
       def command[M[_]: Monad] = lift(_.hincrBy(key, field, value))
     }
     case class JHincrByFloat(key: String, field: String, value: Double) extends JedisCommandOp[Double] {
       def command[M[_]: Monad] = lift(_.hincrByFloat(key, field, value))
     }
+    case class JHkeys(key: String) extends JedisCommandOp[Set[String]] {
+      def command[M[_]: Monad] = lift(_.hkeys(key))
+    }
     case class JHlen(key: String) extends JedisCommandOp[Long] {
       def command[M[_]: Monad] = lift(_.hlen(key))
+    }
+    case class JHmget(key: String, fields: String*) extends JedisCommandOp[List[String]] {
+      def command[M[_]: Monad] = lift(_.hmget(key, fields: _*))
+    }
+    case class JHmset(key: String, hash: Map[String, String]) extends JedisCommandOp[String] {
+      def command[M[_]: Monad] = lift(_.hmset(key, hash))
     }
     case class JHset(key: String, field: String, value: String) extends JedisCommandOp[Long] {
       def command[M[_]: Monad] = lift(_.hset(key, field, value))
     }
     case class JHsetnx(key: String, field: String, value: String) extends JedisCommandOp[Long] {
       def command[M[_]: Monad] = lift(_.hsetnx(key, field, value))
+    }
+    case class JHvals(key: String) extends JedisCommandOp[List[String]] {
+      def command[M[_]: Monad] = lift(_.hvals(key))
     }
     case class JIncr(key: String) extends JedisCommandOp[Long] {
       def command[M[_]: Monad] = lift(_.incr(key))
@@ -78,6 +98,9 @@ trait JedisCommands {
     }
     case class JIncrByFloat(key: String, value: Double) extends JedisCommandOp[Double] {
       def command[M[_]: Monad] = lift(_.incrByFloat(key, value))
+    }
+    case class JKeys(pattern: String) extends JedisCommandOp[Set[String]] {
+      def command[M[_]: Monad] = lift(_.keys(pattern))
     }
     case class JLindex(key: String, index: Long) extends JedisCommandOp[String] {
       def command[M[_]: Monad] = lift(_.lindex(key, index))
@@ -94,6 +117,9 @@ trait JedisCommands {
     case class JLpushx(key: String, string: String*) extends JedisCommandOp[Long] {
       def command[M[_]: Monad] = lift(_.lpushx(key, string: _*))
     }
+    case class JLrange(key: String, start: Long, end: Long) extends JedisCommandOp[List[String]] {
+      def command[M[_]: Monad] = lift(_.lrange(key, start, end))
+    }
     case class JLrem(key: String, count: Long, value: String) extends JedisCommandOp[Long] {
       def command[M[_]: Monad] = lift(_.lrem(key, count, value))
     }
@@ -102,6 +128,9 @@ trait JedisCommands {
     }
     case class JLtrim(key: String, start: Long, end: Long) extends JedisCommandOp[String] {
       def command[M[_]: Monad] = lift(_.ltrim(key, start, end))
+    }
+    case class JMget(keys: String*) extends JedisCommandOp[List[String]] {
+      def command[M[_]: Monad] = lift(_.mget(keys: _*))
     }
     case class JPersist(key: String) extends JedisCommandOp[Long] {
       def command[M[_]: Monad] = lift(_.persist(key))
@@ -130,6 +159,15 @@ trait JedisCommands {
     case class JSet(key: String, value: String) extends JedisCommandOp[String] {
       def command[M[_]: Monad] = lift(_.set(key, value))
     }
+    case class JSet1(key: String, value: String, nxxx: String) extends JedisCommandOp[String] {
+      def command[M[_]: Monad] = lift(_.set(key, value, nxxx))
+    }
+    case class JSet2(key: String, value: String, nxxx: String, expx: String, time: Int) extends JedisCommandOp[String] {
+      def command[M[_]: Monad] = lift(_.set(key, value, nxxx, expx, time))
+    }
+    case class JSet3(key: String, value: String, nxxx: String, expx: String, time: Long) extends JedisCommandOp[String] {
+      def command[M[_]: Monad] = lift(_.set(key, value, nxxx, expx, time))
+    }
     case class JTtl(key: String) extends JedisCommandOp[Long] {
       def command[M[_]: Monad] = lift(_.ttl(key))
     }
@@ -149,6 +187,9 @@ trait JedisCommands {
 
   def del(keys: String*) =
     Free.liftF(JDel(keys: _*))
+
+  def del(key: String) =
+    Free.liftF(JDel1(key))
 
   def echo(string: String) =
     Free.liftF(JEcho(string))
@@ -177,20 +218,35 @@ trait JedisCommands {
   def hget(key: String, field: String) =
     Free.liftF(JHget(key, field))
 
+  def hgetAll(key: String) =
+    Free.liftF(JHgetAll(key))
+
   def hincrBy(key: String, field: String, value: Long) =
     Free.liftF(JHincrBy(key, field, value))
 
   def hincrByFloat(key: String, field: String, value: Double) =
     Free.liftF(JHincrByFloat(key, field, value))
 
+  def hkeys(key: String) =
+    Free.liftF(JHkeys(key))
+
   def hlen(key: String) =
     Free.liftF(JHlen(key))
+
+  def hmget(key: String, fields: String*) =
+    Free.liftF(JHmget(key, fields: _*))
+
+  def hmset(key: String, hash: Map[String, String]) =
+    Free.liftF(JHmset(key, hash))
 
   def hset(key: String, field: String, value: String) =
     Free.liftF(JHset(key, field, value))
 
   def hsetnx(key: String, field: String, value: String) =
     Free.liftF(JHsetnx(key, field, value))
+
+  def hvals(key: String) =
+    Free.liftF(JHvals(key))
 
   def incr(key: String) =
     Free.liftF(JIncr(key))
@@ -200,6 +256,9 @@ trait JedisCommands {
 
   def incrByFloat(key: String, value: Double) =
     Free.liftF(JIncrByFloat(key, value))
+
+  def keys(pattern: String) =
+    Free.liftF(JKeys(pattern))
 
   def lindex(key: String, index: Long) =
     Free.liftF(JLindex(key, index))
@@ -216,6 +275,9 @@ trait JedisCommands {
   def lpushx(key: String, string: String*) =
     Free.liftF(JLpushx(key, string: _*))
 
+  def lrange(key: String, start: Long, end: Long) =
+    Free.liftF(JLrange(key, start, end))
+
   def lrem(key: String, count: Long, value: String) =
     Free.liftF(JLrem(key, count, value))
 
@@ -224,6 +286,9 @@ trait JedisCommands {
 
   def ltrim(key: String, start: Long, end: Long) =
     Free.liftF(JLtrim(key, start, end))
+
+  def mget(keys: String*) =
+    Free.liftF(JMget(keys: _*))
 
   def persist(key: String) =
     Free.liftF(JPersist(key))
@@ -251,6 +316,15 @@ trait JedisCommands {
 
   def set(key: String, value: String) =
     Free.liftF(JSet(key, value))
+
+  def set(key: String, value: String, nxxx: String) =
+    Free.liftF(JSet1(key, value, nxxx))
+
+  def set(key: String, value: String, nxxx: String, expx: String, time: Int) =
+    Free.liftF(JSet2(key, value, nxxx, expx, time))
+
+  def set(key: String, value: String, nxxx: String, expx: String, time: Long) =
+    Free.liftF(JSet3(key, value, nxxx, expx, time))
 
   def ttl(key: String) =
     Free.liftF(JTtl(key))
