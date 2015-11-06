@@ -1,0 +1,3 @@
+# Zedis
+
+- Status: WIP
