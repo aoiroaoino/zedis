@@ -33,15 +33,20 @@ object ZedisBuild extends Build {
     scalacOptions in (Test, console) <<= (scalacOptions in (Compile, console))
   )
 
+  val scalazVersion  = "7.2.0-M4"
+  val monocleVersion = "1.1.1"
+
   // main
-  val scalazCore     = "org.scalaz"                 %% "scalaz-core"   % "7.2.0-M4"
-  val scalazStream   = "org.scalaz.stream"          %% "scalaz-stream" % "0.8"
-  val monocleCore    = "com.github.julien-truffaut" %% "monocle-core"  % "1.1.1"
-  val monocleMacro   = "com.github.julien-truffaut" %% "monocle-macro" % "1.1.1"
-  val jedis          = "redis.clients"              %  "jedis"         % "2.7.2"
+  val scalazCore       = "org.scalaz"                 %% "scalaz-core"       % scalazVersion
+  val scalazEffect     = "org.scalaz"                 %% "scalaz-effect"     % scalazVersion
+  val scalazConcurrent = "org.scalaz"                 %% "scalaz-concurrent" % scalazVersion
+  val scalazStream     = "org.scalaz.stream"          %% "scalaz-stream"     % "0.8"
+  val monocleCore      = "com.github.julien-truffaut" %% "monocle-core"      % monocleVersion
+  val monocleMacro     = "com.github.julien-truffaut" %% "monocle-macro"     % monocleVersion
+  val jedis            = "redis.clients"              %  "jedis"             % "2.7.2"
 
   // test
-  val scalatest      = "org.scalatest"              %% "scalatest"     % "2.2.4"  % "test"
+  val scalatest        = "org.scalatest"              %% "scalatest"         % "2.2.4"  % "test"
 
   lazy val root = Project(
     id        = "zedis",
@@ -57,7 +62,8 @@ object ZedisBuild extends Build {
       name := "zedis-core",
       libraryDependencies ++= Seq(
         scalazCore,
-        scalazStream,
+        scalazEffect,
+        scalazConcurrent,
         jedis
       ),
       genJedisCommands <<= (scalaSource in Compile, streams) map {
@@ -71,11 +77,11 @@ object ZedisBuild extends Build {
     )
   )
 
-  lazy val orm = Project(
-    id           = "orm",
-    base         = file("orm"),
+  lazy val client = Project(
+    id           = "client",
+    base         = file("client"),
     settings     = commonSettings ++ Seq(
-      name := "zedis-orm"//,
+      name := "zedis-client"//,
       // libraryDependencies ++= Seq(
       // )
     ),
