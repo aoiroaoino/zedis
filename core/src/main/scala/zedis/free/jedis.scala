@@ -2,9 +2,9 @@ package zedis.free
 
 import scala.collection.JavaConversions
 
-import scalaz.Id.Id
-import scalaz.{Free, Kleisli, Monad, ~>}
-import scalaz.std.option._
+import scalaz.{Free, Kleisli, Monad, ~>, \/}
+import scalaz.effect.IO
+import scalaz.syntax.catchable._
 import redis.clients.jedis.Jedis
 
 import zedis.free.commands.JedisCommands
@@ -30,7 +30,9 @@ object jedis extends JedisCommands {
     program.foldMap(interpK[M] andThen trans[M](session))
 
   implicit class JedisCommandOps[M[_]: Monad, A](ma: JedisCommand[A]) {
-    def exec(session: Jedis): A = runCommand[Id, A](ma, session)
-    def execOpt(session: Jedis): Option[A] = runCommand[Option, A](ma, session)
+    def exec(session: Jedis): Throwable \/ A =
+      runCommand[IO, A](ma, session).attempt.unsafePerformIO.flatMap{ n =>
+        if (n == null) \/.left(new Exception("not found value")) else \/.right(n)
+      }
   }
 }
