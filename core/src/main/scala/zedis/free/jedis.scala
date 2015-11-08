@@ -4,7 +4,6 @@ import scala.collection.JavaConversions
 
 import scalaz.{Free, Kleisli, Monad, ~>, \/}
 import scalaz.effect.IO
-import scalaz.syntax.catchable._
 import redis.clients.jedis.Jedis
 
 import zedis.free.commands.JedisCommands
@@ -29,10 +28,4 @@ object jedis extends JedisCommands {
   def runCommand[M[_]: Monad, A](program: JedisCommand[A], session: Jedis): M[A] =
     program.foldMap(interpK[M] andThen trans[M](session))
 
-  implicit class JedisCommandOps[M[_]: Monad, A](ma: JedisCommand[A]) {
-    def exec(session: Jedis): Throwable \/ A =
-      runCommand[IO, A](ma, session).attempt.unsafePerformIO.flatMap{ n =>
-        if (n == null) \/.left(new Exception("not found value")) else \/.right(n)
-      }
-  }
 }
