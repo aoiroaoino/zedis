@@ -4,7 +4,7 @@ import scala.collection.JavaConversions
 
 import java.util.{Map, Set, List}
 
-import scalaz.{Free, Kleisli, Monad}
+import scalaz.{Free, Kleisli, Monad, Catchable}
 import redis.clients.jedis.Jedis
 
 trait JedisCommands {
@@ -13,163 +13,163 @@ trait JedisCommands {
     protected def lift[M[_]](f: Jedis => A)(implicit M: Monad[M]): Kleisli[M, Jedis, A] =
       Kleisli{ jedis => M.point[A](f(jedis)) }
 
-    def command[M[_]: Monad]: Kleisli[M, Jedis, A]
+    def command[M[_]: Monad: Catchable]: Kleisli[M, Jedis, A]
   }
 
   object JedisCommandOp {
 
     case class JClose() extends JedisCommandOp[Unit] {
-      def command[M[_]: Monad] = lift(_.close())
+      def command[M[_]: Monad: Catchable] = lift(_.close())
     }
     case class JDecr(key: String) extends JedisCommandOp[Long] {
-      def command[M[_]: Monad] = lift(_.decr(key))
+      def command[M[_]: Monad: Catchable] = lift(_.decr(key))
     }
     case class JDecrBy(key: String, integer: Long) extends JedisCommandOp[Long] {
-      def command[M[_]: Monad] = lift(_.decrBy(key, integer))
+      def command[M[_]: Monad: Catchable] = lift(_.decrBy(key, integer))
     }
     case class JDel(keys: String*) extends JedisCommandOp[Long] {
-      def command[M[_]: Monad] = lift(_.del(keys: _*))
+      def command[M[_]: Monad: Catchable] = lift(_.del(keys: _*))
     }
     case class JDel1(key: String) extends JedisCommandOp[Long] {
-      def command[M[_]: Monad] = lift(_.del(key))
+      def command[M[_]: Monad: Catchable] = lift(_.del(key))
     }
     case class JEcho(string: String) extends JedisCommandOp[String] {
-      def command[M[_]: Monad] = lift(_.echo(string))
+      def command[M[_]: Monad: Catchable] = lift(_.echo(string))
     }
     case class JExists(key: String) extends JedisCommandOp[Boolean] {
-      def command[M[_]: Monad] = lift(_.exists(key))
+      def command[M[_]: Monad: Catchable] = lift(_.exists(key))
     }
     case class JExpire(key: String, seconds: Int) extends JedisCommandOp[Long] {
-      def command[M[_]: Monad] = lift(_.expire(key, seconds))
+      def command[M[_]: Monad: Catchable] = lift(_.expire(key, seconds))
     }
     case class JExpireAt(key: String, unixTime: Long) extends JedisCommandOp[Long] {
-      def command[M[_]: Monad] = lift(_.expireAt(key, unixTime))
+      def command[M[_]: Monad: Catchable] = lift(_.expireAt(key, unixTime))
     }
     case class JGet(key: String) extends JedisCommandOp[String] {
-      def command[M[_]: Monad] = lift(_.get(key))
+      def command[M[_]: Monad: Catchable] = lift(_.get(key))
     }
     case class JGetSet(key: String, value: String) extends JedisCommandOp[String] {
-      def command[M[_]: Monad] = lift(_.getSet(key, value))
+      def command[M[_]: Monad: Catchable] = lift(_.getSet(key, value))
     }
     case class JHdel(key: String, fields: String*) extends JedisCommandOp[Long] {
-      def command[M[_]: Monad] = lift(_.hdel(key, fields: _*))
+      def command[M[_]: Monad: Catchable] = lift(_.hdel(key, fields: _*))
     }
     case class JHexists(key: String, field: String) extends JedisCommandOp[Boolean] {
-      def command[M[_]: Monad] = lift(_.hexists(key, field))
+      def command[M[_]: Monad: Catchable] = lift(_.hexists(key, field))
     }
     case class JHget(key: String, field: String) extends JedisCommandOp[String] {
-      def command[M[_]: Monad] = lift(_.hget(key, field))
+      def command[M[_]: Monad: Catchable] = lift(_.hget(key, field))
     }
     case class JHgetAll(key: String) extends JedisCommandOp[Map[String, String]] {
-      def command[M[_]: Monad] = lift(_.hgetAll(key))
+      def command[M[_]: Monad: Catchable] = lift(_.hgetAll(key))
     }
     case class JHincrBy(key: String, field: String, value: Long) extends JedisCommandOp[Long] {
-      def command[M[_]: Monad] = lift(_.hincrBy(key, field, value))
+      def command[M[_]: Monad: Catchable] = lift(_.hincrBy(key, field, value))
     }
     case class JHincrByFloat(key: String, field: String, value: Double) extends JedisCommandOp[Double] {
-      def command[M[_]: Monad] = lift(_.hincrByFloat(key, field, value))
+      def command[M[_]: Monad: Catchable] = lift(_.hincrByFloat(key, field, value))
     }
     case class JHkeys(key: String) extends JedisCommandOp[Set[String]] {
-      def command[M[_]: Monad] = lift(_.hkeys(key))
+      def command[M[_]: Monad: Catchable] = lift(_.hkeys(key))
     }
     case class JHlen(key: String) extends JedisCommandOp[Long] {
-      def command[M[_]: Monad] = lift(_.hlen(key))
+      def command[M[_]: Monad: Catchable] = lift(_.hlen(key))
     }
     case class JHmget(key: String, fields: String*) extends JedisCommandOp[List[String]] {
-      def command[M[_]: Monad] = lift(_.hmget(key, fields: _*))
+      def command[M[_]: Monad: Catchable] = lift(_.hmget(key, fields: _*))
     }
     case class JHmset(key: String, hash: Map[String, String]) extends JedisCommandOp[String] {
-      def command[M[_]: Monad] = lift(_.hmset(key, hash))
+      def command[M[_]: Monad: Catchable] = lift(_.hmset(key, hash))
     }
     case class JHset(key: String, field: String, value: String) extends JedisCommandOp[Long] {
-      def command[M[_]: Monad] = lift(_.hset(key, field, value))
+      def command[M[_]: Monad: Catchable] = lift(_.hset(key, field, value))
     }
     case class JHsetnx(key: String, field: String, value: String) extends JedisCommandOp[Long] {
-      def command[M[_]: Monad] = lift(_.hsetnx(key, field, value))
+      def command[M[_]: Monad: Catchable] = lift(_.hsetnx(key, field, value))
     }
     case class JHvals(key: String) extends JedisCommandOp[List[String]] {
-      def command[M[_]: Monad] = lift(_.hvals(key))
+      def command[M[_]: Monad: Catchable] = lift(_.hvals(key))
     }
     case class JIncr(key: String) extends JedisCommandOp[Long] {
-      def command[M[_]: Monad] = lift(_.incr(key))
+      def command[M[_]: Monad: Catchable] = lift(_.incr(key))
     }
     case class JIncrBy(key: String, integer: Long) extends JedisCommandOp[Long] {
-      def command[M[_]: Monad] = lift(_.incrBy(key, integer))
+      def command[M[_]: Monad: Catchable] = lift(_.incrBy(key, integer))
     }
     case class JIncrByFloat(key: String, value: Double) extends JedisCommandOp[Double] {
-      def command[M[_]: Monad] = lift(_.incrByFloat(key, value))
+      def command[M[_]: Monad: Catchable] = lift(_.incrByFloat(key, value))
     }
     case class JKeys(pattern: String) extends JedisCommandOp[Set[String]] {
-      def command[M[_]: Monad] = lift(_.keys(pattern))
+      def command[M[_]: Monad: Catchable] = lift(_.keys(pattern))
     }
     case class JLindex(key: String, index: Long) extends JedisCommandOp[String] {
-      def command[M[_]: Monad] = lift(_.lindex(key, index))
+      def command[M[_]: Monad: Catchable] = lift(_.lindex(key, index))
     }
     case class JLlen(key: String) extends JedisCommandOp[Long] {
-      def command[M[_]: Monad] = lift(_.llen(key))
+      def command[M[_]: Monad: Catchable] = lift(_.llen(key))
     }
     case class JLpop(key: String) extends JedisCommandOp[String] {
-      def command[M[_]: Monad] = lift(_.lpop(key))
+      def command[M[_]: Monad: Catchable] = lift(_.lpop(key))
     }
     case class JLpush(key: String, strings: String*) extends JedisCommandOp[Long] {
-      def command[M[_]: Monad] = lift(_.lpush(key, strings: _*))
+      def command[M[_]: Monad: Catchable] = lift(_.lpush(key, strings: _*))
     }
     case class JLpushx(key: String, string: String*) extends JedisCommandOp[Long] {
-      def command[M[_]: Monad] = lift(_.lpushx(key, string: _*))
+      def command[M[_]: Monad: Catchable] = lift(_.lpushx(key, string: _*))
     }
     case class JLrange(key: String, start: Long, end: Long) extends JedisCommandOp[List[String]] {
-      def command[M[_]: Monad] = lift(_.lrange(key, start, end))
+      def command[M[_]: Monad: Catchable] = lift(_.lrange(key, start, end))
     }
     case class JLrem(key: String, count: Long, value: String) extends JedisCommandOp[Long] {
-      def command[M[_]: Monad] = lift(_.lrem(key, count, value))
+      def command[M[_]: Monad: Catchable] = lift(_.lrem(key, count, value))
     }
     case class JLset(key: String, index: Long, value: String) extends JedisCommandOp[String] {
-      def command[M[_]: Monad] = lift(_.lset(key, index, value))
+      def command[M[_]: Monad: Catchable] = lift(_.lset(key, index, value))
     }
     case class JLtrim(key: String, start: Long, end: Long) extends JedisCommandOp[String] {
-      def command[M[_]: Monad] = lift(_.ltrim(key, start, end))
+      def command[M[_]: Monad: Catchable] = lift(_.ltrim(key, start, end))
     }
     case class JMget(keys: String*) extends JedisCommandOp[List[String]] {
-      def command[M[_]: Monad] = lift(_.mget(keys: _*))
+      def command[M[_]: Monad: Catchable] = lift(_.mget(keys: _*))
     }
     case class JPersist(key: String) extends JedisCommandOp[Long] {
-      def command[M[_]: Monad] = lift(_.persist(key))
+      def command[M[_]: Monad: Catchable] = lift(_.persist(key))
     }
     case class JRandomKey() extends JedisCommandOp[String] {
-      def command[M[_]: Monad] = lift(_.randomKey())
+      def command[M[_]: Monad: Catchable] = lift(_.randomKey())
     }
     case class JRename(oldkey: String, newkey: String) extends JedisCommandOp[String] {
-      def command[M[_]: Monad] = lift(_.rename(oldkey, newkey))
+      def command[M[_]: Monad: Catchable] = lift(_.rename(oldkey, newkey))
     }
     case class JRestore(key: String, ttl: Int, serializedValue: Array[Byte]) extends JedisCommandOp[String] {
-      def command[M[_]: Monad] = lift(_.restore(key, ttl, serializedValue))
+      def command[M[_]: Monad: Catchable] = lift(_.restore(key, ttl, serializedValue))
     }
     case class JRpop(key: String) extends JedisCommandOp[String] {
-      def command[M[_]: Monad] = lift(_.rpop(key))
+      def command[M[_]: Monad: Catchable] = lift(_.rpop(key))
     }
     case class JRpoplpush(srckey: String, dstkey: String) extends JedisCommandOp[String] {
-      def command[M[_]: Monad] = lift(_.rpoplpush(srckey, dstkey))
+      def command[M[_]: Monad: Catchable] = lift(_.rpoplpush(srckey, dstkey))
     }
     case class JRpush(key: String, strings: String*) extends JedisCommandOp[Long] {
-      def command[M[_]: Monad] = lift(_.rpush(key, strings: _*))
+      def command[M[_]: Monad: Catchable] = lift(_.rpush(key, strings: _*))
     }
     case class JRpushx(key: String, string: String*) extends JedisCommandOp[Long] {
-      def command[M[_]: Monad] = lift(_.rpushx(key, string: _*))
+      def command[M[_]: Monad: Catchable] = lift(_.rpushx(key, string: _*))
     }
     case class JSet(key: String, value: String) extends JedisCommandOp[String] {
-      def command[M[_]: Monad] = lift(_.set(key, value))
+      def command[M[_]: Monad: Catchable] = lift(_.set(key, value))
     }
     case class JSet1(key: String, value: String, nxxx: String) extends JedisCommandOp[String] {
-      def command[M[_]: Monad] = lift(_.set(key, value, nxxx))
+      def command[M[_]: Monad: Catchable] = lift(_.set(key, value, nxxx))
     }
     case class JSet2(key: String, value: String, nxxx: String, expx: String, time: Int) extends JedisCommandOp[String] {
-      def command[M[_]: Monad] = lift(_.set(key, value, nxxx, expx, time))
+      def command[M[_]: Monad: Catchable] = lift(_.set(key, value, nxxx, expx, time))
     }
     case class JSet3(key: String, value: String, nxxx: String, expx: String, time: Long) extends JedisCommandOp[String] {
-      def command[M[_]: Monad] = lift(_.set(key, value, nxxx, expx, time))
+      def command[M[_]: Monad: Catchable] = lift(_.set(key, value, nxxx, expx, time))
     }
     case class JTtl(key: String) extends JedisCommandOp[Long] {
-      def command[M[_]: Monad] = lift(_.ttl(key))
+      def command[M[_]: Monad: Catchable] = lift(_.ttl(key))
     }
   }
 

@@ -9,7 +9,7 @@ object FreeCommandGenerator {
         |
         |import java.util.{Map, Set, List}
         |
-        |import scalaz.{Free, Kleisli, Monad}
+        |import scalaz.{Free, Kleisli, Monad, Catchable}
         |import redis.clients.jedis.Jedis
         |
         |trait JedisCommands {
@@ -18,7 +18,7 @@ object FreeCommandGenerator {
         |    protected def lift[M[_]](f: Jedis => A)(implicit M: Monad[M]): Kleisli[M, Jedis, A] =
         |      Kleisli{ jedis => M.point[A](f(jedis)) }
         |
-        |    def command[M[_]: Monad]: Kleisli[M, Jedis, A]
+        |    def command[M[_]: Monad: Catchable]: Kleisli[M, Jedis, A]
         |  }
         |
         |  object JedisCommandOp {
@@ -40,7 +40,7 @@ object FreeCommandGenerator {
 
     def classDef: String =
       s"""|case class J$className($argsStr) extends JedisCommandOp[$returnType] {
-          |  def command[M[_]: Monad] = lift(_.$method($argsKeys))
+          |  def command[M[_]: Monad: Catchable] = lift(_.$method($argsKeys))
           |}
           |""".stripMargin
 
