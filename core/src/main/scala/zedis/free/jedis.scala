@@ -27,6 +27,4 @@ object jedis extends JedisCommands {
 
   def runCommand[M[_]: Monad: Catchable, A](program: JedisCommand[A], session: Jedis): M[A] =
     program.foldMap(interpK[M] andThen trans[M](session))
-
-
 }

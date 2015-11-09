@@ -18,7 +18,7 @@ trait JedisCommandSyntax {
     }
 
     def execOpt(session: Jedis): Option[A] =
-      runCommand[IO, A](ma, session).attempt.unsafePerformIO.fold(_ => None, a => Option(a)) // nullチェック含む
+      runCommand[IO, A](ma, session).attempt.unsafePerformIO.fold(_ => None, a => Option(a))
   }
 }
 
