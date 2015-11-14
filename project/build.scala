@@ -73,6 +73,14 @@ object ZedisBuild extends Build {
           IO.write(f, source)
           streams.log("Finish!")
         }
+      },
+      genJedisCommands2 <<= (scalaSource in Compile, streams) map {
+        (scalaSource, streams) => {
+          val f = scalaSource / "zedis" / "commands" / "JedisCommand.scala"
+          val source = JedisCommandGenerator.template
+          IO.write(f, source)
+          streams.log("Finish!")
+        }
       }
     )
   )
@@ -101,4 +109,5 @@ object ZedisBuild extends Build {
   )
 
   lazy val genJedisCommands = taskKey[Unit]("generate free monad for JedisCommands")
+  lazy val genJedisCommands2 = taskKey[Unit]("generate free monad for JedisCommands2")
 }
