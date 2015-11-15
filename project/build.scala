@@ -55,7 +55,7 @@ object ZedisBuild extends Build {
     id        = "zedis",
     base      = file("."),
     settings  = commonSettings,
-    aggregate = Seq(core, test)
+    aggregate = Seq(core, example)
   )
 
   lazy val core = Project(
@@ -91,22 +91,11 @@ object ZedisBuild extends Build {
     )
   )
 
-  lazy val client = Project(
-    id           = "client",
-    base         = file("client"),
+  lazy val example = Project(
+    id           = "example",
+    base         = file("example"),
     settings     = commonSettings ++ Seq(
-      name := "zedis-client"//,
-      // libraryDependencies ++= Seq(
-      // )
-    ),
-    dependencies = Seq(core)
-  )
-
-  lazy val test = Project(
-    id           = "test",
-    base         = file("test"),
-    settings     = commonSettings ++ Seq(
-      name := "zedis-test",
+      name := "zedis-example",
       libraryDependencies ++= Seq(
         scalatest
       )
