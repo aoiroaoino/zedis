@@ -17,7 +17,9 @@ object JedisCommandGenerator {
     s"""|package zedis
         |package commands
         |
-        |import java.util.{Map, Set, List}
+        |import scala.collection.JavaConversions._
+        |
+        |import java.util.{Map => JMap, Set => JSet, List => JList}
         |
         |import redis.clients.jedis.Jedis
         |
@@ -47,30 +49,30 @@ object JedisCommandGenerator {
     Command("Long",                "hdel",         "key"     -> "String",  "fields"   -> "String*"),
     Command("Boolean",             "hexists",      "key"     -> "String",  "field"    -> "String"),
     Command("String",              "hget",         "key"     -> "String",  "field"    -> "String"),
-    Command("Map[String, String]", "hgetAll",      "key"     -> "String"),
+    Command("JMap[String, String]", "hgetAll",      "key"     -> "String"),
     Command("Long",                "hincrBy",      "key"     -> "String",  "field"    -> "String",  "value" -> "Long"),
     Command("Double",              "hincrByFloat", "key"     -> "String",  "field"    -> "String",  "value" -> "Double"),
-    Command("Set[String]",         "hkeys",        "key"     -> "String"),
+    Command("JSet[String]",         "hkeys",        "key"     -> "String"),
     Command("Long",                "hlen",         "key"     -> "String"),
-    Command("List[String]",        "hmget",        "key"     -> "String",  "fields"   -> "String*"),
+    Command("JList[String]",        "hmget",        "key"     -> "String",  "fields"   -> "String*"),
     Command("String",              "hmset",        "key"     -> "String",  "hash"     -> "Map[String, String]"),
     Command("Long",                "hset",         "key"     -> "String",  "field"    -> "String",  "value" -> "String"),
     Command("Long",                "hsetnx",       "key"     -> "String",  "field"    -> "String",  "value" -> "String"),
-    Command("List[String]",        "hvals",        "key"     -> "String"),
+    Command("JList[String]",        "hvals",        "key"     -> "String"),
     Command("Long",                "incr",         "key"     -> "String"),
     Command("Long",                "incrBy",       "key"     -> "String",  "integer"  -> "Long"),
     Command("Double",              "incrByFloat",  "key"     -> "String",  "value"    -> "Double"),
-    Command("Set[String]",         "keys",         "pattern" -> "String"),
+    Command("JSet[String]",         "keys",         "pattern" -> "String"),
     Command("String",              "lindex",       "key"     -> "String",  "index"    -> "Long"),
     Command("Long",                "llen",         "key"     -> "String"),
     Command("String",              "lpop",         "key"     -> "String"),
     Command("Long",                "lpush",        "key"     -> "String",  "strings"  -> "String*"),
     Command("Long",                "lpushx",       "key"     -> "String",  "string"   -> "String*"),
-    Command("List[String]",        "lrange",       "key"     -> "String",  "start"    -> "Long",    "end"   -> "Long"),
+    Command("JList[String]",        "lrange",       "key"     -> "String",  "start"    -> "Long",    "end"   -> "Long"),
     Command("Long",                "lrem",         "key"     -> "String",  "count"    -> "Long",    "value" -> "String"),
     Command("String",              "lset",         "key"     -> "String",  "index"    -> "Long",    "value" -> "String"),
     Command("String",              "ltrim",        "key"     -> "String",  "start"    -> "Long",    "end"   -> "Long"),
-    Command("List[String]",        "mget",         "keys"    -> "String*"),
+    Command("JList[String]",        "mget",         "keys"    -> "String*"),
     Command("Long",                "persist",      "key"     -> "String"),
     Command("String",              "randomKey"),
     Command("String",              "rename",       "oldkey"  -> "String",  "newkey"   -> "String"),

@@ -44,6 +44,9 @@ object ZedisBuild extends Build {
   val monocleCore      = "com.github.julien-truffaut" %% "monocle-core"      % monocleVersion
   val monocleMacro     = "com.github.julien-truffaut" %% "monocle-macro"     % monocleVersion
   val jedis            = "redis.clients"              %  "jedis"             % "2.7.2"
+  val nscalaTime       = "com.github.nscala-time"     %% "nscala-time"       % "2.4.0"
+  val slf4jLog4j       = "org.slf4j"                  %  "slf4j-log4j12"     % "1.7.12"
+  val typesafeConfig   = "com.typesafe"               %  "config"            % "1.2.1"
 
   // test
   val scalatest        = "org.scalatest"              %% "scalatest"         % "2.2.4"  % "test"
@@ -64,20 +67,23 @@ object ZedisBuild extends Build {
         scalazCore,
         scalazEffect,
         scalazConcurrent,
-        jedis
+        jedis,
+        nscalaTime,
+        slf4jLog4j,
+        typesafeConfig
       ),
-      genJedisCommands <<= (scalaSource in Compile, streams) map {
+      genJedisCommand <<= (scalaSource in Compile, streams) map {
         (scalaSource, streams) => {
-          val f = scalaSource / "zedis" / "free" / "commands" / "JedisCommands.scala"
-          val source = FreeCommandGenerator.template
+          val f = scalaSource / "zedis" / "commands" / "JedisCommand.scala"
+          val source = JedisCommandGenerator.template
           IO.write(f, source)
           streams.log("Finish!")
         }
       },
-      genJedisCommands2 <<= (scalaSource in Compile, streams) map {
+      genPipelineCommand <<= (scalaSource in Compile, streams) map {
         (scalaSource, streams) => {
-          val f = scalaSource / "zedis" / "commands" / "JedisCommand.scala"
-          val source = JedisCommandGenerator.template
+          val f = scalaSource / "zedis" / "commands" / "PipelineCommand.scala"
+          val source = PipelineCommandGenerator.template
           IO.write(f, source)
           streams.log("Finish!")
         }
@@ -108,6 +114,6 @@ object ZedisBuild extends Build {
     dependencies = Seq(core)
   )
 
-  lazy val genJedisCommands = taskKey[Unit]("generate free monad for JedisCommands")
-  lazy val genJedisCommands2 = taskKey[Unit]("generate free monad for JedisCommands2")
+  lazy val genJedisCommand = taskKey[Unit]("generate free monad for JedisCommand")
+  lazy val genPipelineCommand = taskKey[Unit]("generate free monad for PipelineCommands")
 }
