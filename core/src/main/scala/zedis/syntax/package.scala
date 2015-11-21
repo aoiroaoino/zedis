@@ -2,5 +2,7 @@ package zedis
 
 package object syntax {
 
-  object kleisliio extends KleisliIOSyntax
+  object all extends AllSyntax
+
+  object command extends CommandSyntax
 }
