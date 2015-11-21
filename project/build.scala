@@ -33,6 +33,28 @@ object ZedisBuild extends Build {
     scalacOptions in (Test, console) <<= (scalacOptions in (Compile, console))
   )
 
+  lazy val genJedisCommand    = taskKey[Unit]("generate Command for JedisCommand")
+  lazy val genPipelineCommand = taskKey[Unit]("generate Command for PipelineCommand")
+
+  lazy val genCommands = Seq(
+    genJedisCommand <<= (scalaSource in Compile, streams) map {
+      (scalaSource, streams) => {
+        val f = scalaSource / "zedis" / "commands" / "JedisCommand.scala"
+        val source = JedisCommandGenerator.template
+        IO.write(f, source)
+        streams.log("Finish!")
+      }
+    },
+    genPipelineCommand <<= (scalaSource in Compile, streams) map {
+      (scalaSource, streams) => {
+        val f = scalaSource / "zedis" / "commands" / "PipelineCommand.scala"
+        val source = PipelineCommandGenerator.template
+        IO.write(f, source)
+        streams.log("Finish!")
+      }
+    }
+  )
+
   val scalazVersion  = "7.2.0-M4"
   val monocleVersion = "1.1.1"
 
@@ -71,24 +93,8 @@ object ZedisBuild extends Build {
         nscalaTime,
         slf4jLog4j,
         typesafeConfig
-      ),
-      genJedisCommand <<= (scalaSource in Compile, streams) map {
-        (scalaSource, streams) => {
-          val f = scalaSource / "zedis" / "commands" / "JedisCommand.scala"
-          val source = JedisCommandGenerator.template
-          IO.write(f, source)
-          streams.log("Finish!")
-        }
-      },
-      genPipelineCommand <<= (scalaSource in Compile, streams) map {
-        (scalaSource, streams) => {
-          val f = scalaSource / "zedis" / "commands" / "PipelineCommand.scala"
-          val source = PipelineCommandGenerator.template
-          IO.write(f, source)
-          streams.log("Finish!")
-        }
-      }
-    )
+      )
+    ) ++ genCommands
   )
 
   lazy val example = Project(
@@ -102,7 +108,4 @@ object ZedisBuild extends Build {
     ),
     dependencies = Seq(core)
   )
-
-  lazy val genJedisCommand = taskKey[Unit]("generate free monad for JedisCommand")
-  lazy val genPipelineCommand = taskKey[Unit]("generate free monad for PipelineCommands")
 }
