@@ -77,7 +77,7 @@ object ZedisBuild extends Build {
     id        = "zedis",
     base      = file("."),
     settings  = commonSettings,
-    aggregate = Seq(core, example)
+    aggregate = Seq(core, test)
   )
 
   lazy val core = Project(
