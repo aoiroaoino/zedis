@@ -3,7 +3,7 @@ package util
 
 import com.github.nscala_time.time.Imports._
 
-class DatetimeSpec extends ZedisTestSuite {
+class DatetimeUtilsSpec extends ZedisTestSuite {
   import zedis.util.datetime._
 
   val prefix = "key-"
