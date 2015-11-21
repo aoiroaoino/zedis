@@ -20,7 +20,7 @@ trait DateTimeKey {
     Reader{ date => date.toString(format) }
 
   def createKeyWith_YYYY(prefix: String): Reader[DateTime, String] =
-    createDateTimeKey("yyMM") map (prefix + _)
+    createDateTimeKey("yyyy") map (prefix + _)
 
   def createKeyWith_YYYYMM(prefix: String): Reader[DateTime, String] =
     createDateTimeKey("yyyyMM") map (prefix + _)
@@ -29,5 +29,5 @@ trait DateTimeKey {
     createDateTimeKey("yyyyMMdd") map (prefix + _)
 
   def createKeyWith_YYYYMMDDHH(prefix: String): Reader[DateTime, String] =
-    createDateTimeKey("yyMMddhh") map (prefix + _)
+    createDateTimeKey("yyyyMMddHH") map (prefix + _)
 }

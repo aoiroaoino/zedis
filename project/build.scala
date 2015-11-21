@@ -97,6 +97,18 @@ object ZedisBuild extends Build {
     ) ++ genCommands
   )
 
+  lazy val test = Project(
+    id           = "test",
+    base         = file("test"),
+    settings     = commonSettings ++ Seq(
+      name := "zedis-test",
+      libraryDependencies ++= Seq(
+        scalatest
+      )
+    ),
+    dependencies = Seq(core)
+  )
+
   lazy val example = Project(
     id           = "example",
     base         = file("example"),
