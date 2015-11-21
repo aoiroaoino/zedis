@@ -9,7 +9,7 @@ object JedisCommandGenerator {
 
     def method: String =
       s"""|def $methodName($argsStr): Jedis =!> $returnType =
-          |  KleisliIO{ _.$methodName($argsKeys) }
+          |  Command{ _.$methodName($argsKeys) }
           |""".stripMargin
   }
 

@@ -9,7 +9,7 @@ object PipelineCommandGenerator {
 
     def method: String =
       s"""|def $$$methodName($argsStr): Pipeline =!> $returnType =
-          |  KleisliIO{ _.$methodName($argsKeys) }
+          |  Command{ _.$methodName($argsKeys) }
           |""".stripMargin
   }
 

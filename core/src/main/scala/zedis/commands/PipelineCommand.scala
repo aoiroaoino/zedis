@@ -9,21 +9,21 @@ import redis.clients.jedis.{Pipeline, Response}
 trait PipelineCommand {
 
   def $get(key: String): Pipeline =!> Response[String] =
-    KleisliIO{ _.get(key) }
+    Command{ _.get(key) }
 
   def $hget(key: String, field: String): Pipeline =!> Response[String] =
-    KleisliIO{ _.hget(key, field) }
+    Command{ _.hget(key, field) }
 
   def $hgetAll(key: String): Pipeline =!> Response[JMap[String, String]] =
-    KleisliIO{ _.hgetAll(key) }
+    Command{ _.hgetAll(key) }
 
   def $hincrBy(key: String, field: String, value: Long): Pipeline =!> Response[JLong] =
-    KleisliIO{ _.hincrBy(key, field, value) }
+    Command{ _.hincrBy(key, field, value) }
 
   def $expire(key: String, seconds: Int): Pipeline =!> Response[JLong] =
-    KleisliIO{ _.expire(key, seconds) }
+    Command{ _.expire(key, seconds) }
 
   def $sync(): Pipeline =!> Unit =
-    KleisliIO{ _.sync() }
+    Command{ _.sync() }
 
 }
