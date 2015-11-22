@@ -14,6 +14,9 @@ trait PipelineCommand {
   def $hget(key: String, field: String): Pipeline =!> Response[String] =
     Command{ _.hget(key, field) }
 
+  def $hset(key: String, field: String, value: String): Pipeline =!> Response[JLong] =
+    Command{ _.hset(key, field, value) }
+
   def $hgetAll(key: String): Pipeline =!> Response[JMap[String, String]] =
     Command{ _.hgetAll(key) }
 

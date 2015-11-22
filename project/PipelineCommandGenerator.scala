@@ -36,6 +36,7 @@ object PipelineCommandGenerator {
   lazy val allCommands = Seq(
     Command("Response[String]", "get", "key" -> "String"),
     Command("Response[String]", "hget", "key" -> "String", "field" -> "String"),
+    Command("Response[JLong]", "hset", "key" -> "String",  "field" -> "String", "value" -> "String"),
     Command("Response[JMap[String, String]]", "hgetAll", "key" -> "String"),
     Command("Response[JLong]", "hincrBy", "key" -> "String", "field" -> "String", "value" -> "Long"),
     Command("Response[JLong]", "expire", "key" -> "String", "seconds" -> "Int"),
