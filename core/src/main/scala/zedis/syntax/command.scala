@@ -12,8 +12,10 @@ final class CommandExecOps[A, B](command: Command[A, B]) {
   import scalaz.syntax.catchable._
 
   def exec(a: A): Throwable \/ B =
-    command.run(a).attempt.unsafePerformIO
+    command.run(a).map{ result =>
+      if (result == null) throw NotFoundException("") else result
+    }.attempt.unsafePerformIO
 
   def execOpt(a: A): Option[B] =
-    command.run(a).attempt.unsafePerformIO.toOption
+    exec(a).toOption
 }
