@@ -23,10 +23,11 @@ abstract class StandaloneAccessor extends Accessor {
       f(pipeline)
     }
 
-  def autoSyncPipelined[A](f: Pipeline => A): Unit =
+  def autoSyncPipelined[A](f: Pipeline => A): A =
     using{ jedis =>
       val pipeline = jedis.pipelined()
-      f(pipeline)
+      val a = f(pipeline)
       pipeline.sync()
+      a
     }
 }
