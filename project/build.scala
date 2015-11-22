@@ -56,22 +56,21 @@ object ZedisBuild extends Build {
   )
 
   val scalazVersion  = "7.2.0-M4"
-  val monocleVersion = "1.1.1"
 
   // main
-  val scalazCore       = "org.scalaz"                 %% "scalaz-core"       % scalazVersion
-  val scalazEffect     = "org.scalaz"                 %% "scalaz-effect"     % scalazVersion
-  val scalazConcurrent = "org.scalaz"                 %% "scalaz-concurrent" % scalazVersion
-  val scalazStream     = "org.scalaz.stream"          %% "scalaz-stream"     % "0.8"
-  val monocleCore      = "com.github.julien-truffaut" %% "monocle-core"      % monocleVersion
-  val monocleMacro     = "com.github.julien-truffaut" %% "monocle-macro"     % monocleVersion
-  val jedis            = "redis.clients"              %  "jedis"             % "2.7.2"
-  val nscalaTime       = "com.github.nscala-time"     %% "nscala-time"       % "2.4.0"
-  val slf4jLog4j       = "org.slf4j"                  %  "slf4j-log4j12"     % "1.7.12"
-  val typesafeConfig   = "com.typesafe"               %  "config"            % "1.2.1"
+  val scalaz_core       = "org.scalaz"                 %% "scalaz-core"       % scalazVersion
+  val scalaz_effect     = "org.scalaz"                 %% "scalaz-effect"     % scalazVersion
+  val scalaz_concurrent = "org.scalaz"                 %% "scalaz-concurrent" % scalazVersion
+  val jedis             = "redis.clients"              %  "jedis"             % "2.7.2"
+  val nscala_time       = "com.github.nscala-time"     %% "nscala-time"       % "2.4.0"
+  val typesafe_config   = "com.typesafe"               %  "config"            % "1.2.1"
 
   // test
-  val scalatest        = "org.scalatest"              %% "scalatest"         % "2.2.4"  % "test"
+  val scalatest         = "org.scalatest"              %% "scalatest"         % "2.2.4"  % "test"
+
+  val testDependencies = Seq(
+    scalatest
+  )
 
   lazy val root = Project(
     id        = "zedis",
@@ -86,13 +85,12 @@ object ZedisBuild extends Build {
     settings = commonSettings ++ Seq(
       name := "zedis-core",
       libraryDependencies ++= Seq(
-        scalazCore,
-        scalazEffect,
-        scalazConcurrent,
+        scalaz_core,
+        scalaz_effect,
+        scalaz_concurrent,
         jedis,
-        nscalaTime,
-        slf4jLog4j,
-        typesafeConfig
+        nscala_time,
+        typesafe_config
       )
     ) ++ genCommands
   )
@@ -102,9 +100,7 @@ object ZedisBuild extends Build {
     base         = file("test"),
     settings     = commonSettings ++ Seq(
       name := "zedis-test",
-      libraryDependencies ++= Seq(
-        scalatest
-      )
+      libraryDependencies ++= testDependencies
     ),
     dependencies = Seq(core)
   )
@@ -114,9 +110,7 @@ object ZedisBuild extends Build {
     base         = file("example"),
     settings     = commonSettings ++ Seq(
       name := "zedis-example",
-      libraryDependencies ++= Seq(
-        scalatest
-      )
+      libraryDependencies ++= testDependencies
     ),
     dependencies = Seq(core)
   )
