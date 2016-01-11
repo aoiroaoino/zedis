@@ -55,18 +55,18 @@ object ZedisBuild extends Build {
     }
   )
 
-  val scalazVersion  = "7.2.0-M4"
+  val scalazVersion  = "7.2.0"
 
   // main
   val scalaz_core       = "org.scalaz"                 %% "scalaz-core"       % scalazVersion
   val scalaz_effect     = "org.scalaz"                 %% "scalaz-effect"     % scalazVersion
   val scalaz_concurrent = "org.scalaz"                 %% "scalaz-concurrent" % scalazVersion
-  val jedis             = "redis.clients"              %  "jedis"             % "2.7.2"
-  val nscala_time       = "com.github.nscala-time"     %% "nscala-time"       % "2.4.0"
+  val jedis             = "redis.clients"              %  "jedis"             % "2.8.0"
+  val nscala_time       = "com.github.nscala-time"     %% "nscala-time"       % "2.6.0"
   val typesafe_config   = "com.typesafe"               %  "config"            % "1.2.1"
 
   // test
-  val scalatest         = "org.scalatest"              %% "scalatest"         % "2.2.4"  % "test"
+  val scalatest         = "org.scalatest"              %% "scalatest"         % "2.2.5"  % "test"
 
   val testDependencies = Seq(
     scalatest
