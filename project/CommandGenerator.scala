@@ -1,6 +1,6 @@
 import sbt._
 
-object JedisCommandGenerator {
+object CommandGenerator {
 
   case class Command(returnType: String, methodName: String, args: (String, String)*) {
 
@@ -8,8 +8,8 @@ object JedisCommandGenerator {
     val argsKeys = args.map{ case (n, t) => if (t.endsWith("*")) n + ": _*" else n }.mkString(", ")
 
     def method: String =
-      s"""|def $methodName($argsStr): Jedis =!> $returnType =
-          |  Command{ _.$methodName($argsKeys) }
+      s"""|def $methodName($argsStr): Jedis =?> $returnType =
+          |  kleisliOpt{ _.$methodName($argsKeys) }
           |""".stripMargin
   }
 
@@ -18,12 +18,12 @@ object JedisCommandGenerator {
         |package commands
         |
         |import scala.collection.JavaConversions._
-        |
         |import java.util.{Map => JMap, Set => JSet, List => JList}
         |
+        |import scalaz._
         |import redis.clients.jedis.Jedis
         |
-        |trait JedisCommand {
+        |trait Command {
         |
         |${methods(indent = 2)}
         |}

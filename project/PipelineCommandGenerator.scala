@@ -8,8 +8,8 @@ object PipelineCommandGenerator {
     val argsKeys = args.map{ case (n, t) => if (t.endsWith("*")) n + ": _*" else n }.mkString(", ")
 
     def method: String =
-      s"""|def $$$methodName($argsStr): Pipeline =!> $returnType =
-          |  Command{ _.$methodName($argsKeys) }
+      s"""|def $$$methodName($argsStr): Pipeline =?> $returnType =
+          |  kleisliOpt{ _.$methodName($argsKeys) }
           |""".stripMargin
   }
 
@@ -20,6 +20,7 @@ object PipelineCommandGenerator {
         |import java.lang.{Long => JLong}
         |import java.util.{Map => JMap}
         |
+        |import scalaz._
         |import redis.clients.jedis.{Pipeline, Response}
         |
         |trait PipelineCommand {

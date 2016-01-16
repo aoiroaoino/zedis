@@ -33,14 +33,14 @@ object ZedisBuild extends Build {
     scalacOptions in (Test, console) <<= (scalacOptions in (Compile, console))
   )
 
-  lazy val genJedisCommand    = taskKey[Unit]("generate Command for JedisCommand")
-  lazy val genPipelineCommand = taskKey[Unit]("generate Command for PipelineCommand")
+  lazy val genCommand = taskKey[Unit]("generate Commands for Command.scala")
+  lazy val genPipelineCommand = taskKey[Unit]("generate Commands for PipelineCommand.scala")
 
   lazy val genCommands = Seq(
-    genJedisCommand <<= (scalaSource in Compile, streams) map {
+    genCommand <<= (scalaSource in Compile, streams) map {
       (scalaSource, streams) => {
-        val f = scalaSource / "zedis" / "commands" / "JedisCommand.scala"
-        val source = JedisCommandGenerator.template
+        val f = scalaSource / "zedis" / "commands"/ "Command.scala"
+        val source = CommandGenerator.template
         IO.write(f, source)
         streams.log("Finish!")
       }

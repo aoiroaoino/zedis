@@ -7,6 +7,4 @@ package object util {
   object datetime extends DateTimeUtils
 
   object string extends StringUtils
-
-  object jedis extends JedisUtils
 }
