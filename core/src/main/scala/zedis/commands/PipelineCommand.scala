@@ -27,6 +27,15 @@ trait PipelineCommand {
   def $expire(key: String, seconds: Int): Pipeline =?> Response[JLong] =
     kleisliOpt{ _.expire(key, seconds) }
 
+  def $pfadd(key: String, elements: String*): Pipeline =?> Response[JLong] =
+    kleisliOpt{ _.pfadd(key, elements: _*) }
+
+  def $pfcount(keys: String*): Pipeline =?> Response[JLong] =
+    kleisliOpt{ _.pfcount(keys: _*) }
+
+  def $pfmerge(destKey: String, sourceKeys: String*): Pipeline =?> Response[String] =
+    kleisliOpt{ _.pfmerge(destKey, sourceKeys: _*) }
+
   def $sync(): Pipeline =?> Unit =
     kleisliOpt{ _.sync() }
 

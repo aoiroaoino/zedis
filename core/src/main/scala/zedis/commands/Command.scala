@@ -126,6 +126,15 @@ trait Command {
   def persist(key: String): Jedis =?> Long =
     kleisliOpt{ _.persist(key) }
 
+  def pfadd(key: String, slements: String*): Jedis =?> Long =
+    kleisliOpt{ _.pfadd(key, slements: _*) }
+
+  def pfcount(keys: String*): Jedis =?> Long =
+    kleisliOpt{ _.pfcount(keys: _*) }
+
+  def pfmerge(destKey: String, sourceKeys: String*): Jedis =?> String =
+    kleisliOpt{ _.pfmerge(destKey, sourceKeys: _*) }
+
   def randomKey(): Jedis =?> String =
     kleisliOpt{ _.randomKey() }
 
