@@ -41,6 +41,9 @@ object PipelineCommandGenerator {
     Command("Response[JMap[String, String]]", "hgetAll", "key" -> "String"),
     Command("Response[JLong]", "hincrBy", "key" -> "String", "field" -> "String", "value" -> "Long"),
     Command("Response[JLong]", "expire", "key" -> "String", "seconds" -> "Int"),
+    Command("Response[JLong]", "pfadd", "key" -> "String", "elements" -> "String*"),
+    Command("Response[JLong]", "pfcount", "keys" -> "String*"),
+    Command("Response[String]", "pfmerge", "destKey" -> "String", "sourceKeys" -> "String*"),
     Command("Unit", "sync")
   )
 }
