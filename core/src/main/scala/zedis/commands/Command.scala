@@ -126,8 +126,8 @@ trait Command {
   def persist(key: String): Jedis =?> Long =
     kleisliOpt{ _.persist(key) }
 
-  def pfadd(key: String, slements: String*): Jedis =?> Long =
-    kleisliOpt{ _.pfadd(key, slements: _*) }
+  def pfadd(key: String, elements: String*): Jedis =?> Long =
+    kleisliOpt{ _.pfadd(key, elements: _*) }
 
   def pfcount(keys: String*): Jedis =?> Long =
     kleisliOpt{ _.pfcount(keys: _*) }

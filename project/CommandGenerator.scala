@@ -74,7 +74,7 @@ object CommandGenerator {
     Command("String",              "ltrim",        "key"     -> "String",  "start"    -> "Long",    "end"   -> "Long"),
     Command("JList[String]",        "mget",         "keys"    -> "String*"),
     Command("Long",                "persist",      "key"     -> "String"),
-    Command("Long",                "pfadd",        "key"     -> "String",  "slements"   -> "String*"),
+    Command("Long",                "pfadd",        "key"     -> "String",  "elements"   -> "String*"),
     Command("Long",                "pfcount",      "keys"    -> "String*"),
     Command("String",              "pfmerge",      "destKey" -> "String",  "sourceKeys" -> "String*"),
     Command("String",              "randomKey"),
