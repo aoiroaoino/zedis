@@ -4,6 +4,8 @@ package command
 import scalaz.Free
 import zedis.adt._
 
+object connection extends ConnectionCommand
+
 trait ConnectionCommand {
 
   def auth(password: String): RedisCommand[String] =

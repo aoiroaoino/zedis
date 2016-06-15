@@ -100,4 +100,42 @@ object adt {
   case class VALUETYPE(key: String) extends CommandADT[String]
 
   // case class WAIT
+
+  //
+  // lists
+  //
+
+  // case class BLPOP
+
+  // case class BRPOP
+
+  // case class BRPOPLPUSH
+
+  case class LINDEX[T](key: String, index: Long, _codec: Codec[T]) extends CommandADT[Option[T]]
+
+  case class LINSERT[T](key: String, position: String, pivot: T, value: T, _codec: Codec[T]) extends CommandADT[Long]
+
+  case class LLEN(key: String) extends CommandADT[Long]
+
+  case class LPOP[T](key: String, _codec: Codec[T]) extends CommandADT[Option[T]]
+
+  case class LPUSH[T](key: String, values: Seq[T], _codec: Codec[T]) extends CommandADT[Long]
+
+  case class LPUSHX[T](key: String, values: Seq[T], _codec: Codec[T]) extends CommandADT[Long]
+
+  case class LRANGE[T](key: String, start: Long, end: Long, _codec: Codec[T]) extends CommandADT[Seq[T]]
+
+  case class LREM(key: String, count: Long, value: String) extends CommandADT[Long]
+
+  case class LSET[T](key: String, index: Long, value: T, _codec: Codec[T]) extends CommandADT[String]
+
+  case class LTRIM(key: String, start: Long, stop: Long) extends CommandADT[String]
+
+  case class RPOP[T](key: String, _codec: Codec[T]) extends CommandADT[Option[T]]
+
+  case class RPOPLPUSH[T](source: String, destination: String, _codec: Codec[T]) extends CommandADT[T]
+
+  case class RPUSH[T](key: String, value: Seq[T], _codec: Codec[T]) extends CommandADT[Long]
+
+  case class RPUSHX[T](key: String, value: T, _codec: Codec[T]) extends CommandADT[Long]
 }

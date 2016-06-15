@@ -4,6 +4,8 @@ package command
 import scalaz.Free
 import zedis.adt._
 
+object key extends KeyCommand
+
 trait KeyCommand {
 
   def del(keys: String*): RedisCommand[Long] =

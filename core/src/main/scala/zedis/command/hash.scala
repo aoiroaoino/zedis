@@ -4,6 +4,8 @@ package command
 import scalaz.Free
 import zedis.adt._
 
+object hash extends HasheCommand
+
 trait HasheCommand {
 
   def hdel(key: String, fields: String*): RedisCommand[Long] =
