@@ -28,28 +28,6 @@ lazy val warnUnusedImport = Seq(
   scalacOptions in (Test, console) <<= (scalacOptions in (Compile, console))
 )
 
-lazy val genCommand = taskKey[Unit]("generate Commands for Command.scala")
-lazy val genPipelineCommand = taskKey[Unit]("generate Commands for PipelineCommand.scala")
-
-lazy val genCommands = Seq(
-  genCommand <<= (scalaSource in Compile, streams) map {
-    (scalaSource, streams) => {
-      val f = scalaSource / "zedis" / "commands"/ "Command.scala"
-      val source = CommandGenerator.template
-      IO.write(f, source)
-      streams.log("Finish!")
-    }
-  },
-  genPipelineCommand <<= (scalaSource in Compile, streams) map {
-    (scalaSource, streams) => {
-      val f = scalaSource / "zedis" / "commands" / "PipelineCommand.scala"
-      val source = PipelineCommandGenerator.template
-      IO.write(f, source)
-      streams.log("Finish!")
-    }
-  }
-)
-
 val scalazVersion     = "7.2.3"
 val scalaredisVersion = "3.0"
 val jedisVersion      = "2.8.0"

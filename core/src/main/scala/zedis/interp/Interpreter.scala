@@ -1,8 +1,7 @@
 package zedis
 package interp
 
-import scalaz.{~>, Id, Applicative}
-import scalaz.Id.Id
+import scalaz.{~>, Applicative}
 
 import zedis.adt.CommandADT
 
