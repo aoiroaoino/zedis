@@ -1,5 +1,7 @@
 package zedis
 
+import scalaz.NonEmptyList
+
 object adt {
 
   sealed trait CommandADT[+A]
@@ -56,7 +58,7 @@ object adt {
   // keys
   //
 
-  case class DEL(keys: Seq[String]) extends CommandADT[Long]
+  case class DEL(keys: NonEmptyList[String]) extends CommandADT[Long]
 
   case class DUMP(key: String) extends CommandADT[Array[Byte]]
 
@@ -138,4 +140,38 @@ object adt {
   case class RPUSH[T](key: String, value: Seq[T], _codec: Codec[T]) extends CommandADT[Long]
 
   case class RPUSHX[T](key: String, value: T, _codec: Codec[T]) extends CommandADT[Long]
+
+  //
+  // sets
+  //
+
+  case class SADD[T](key: String, values: NonEmptyList[T], _codec: Codec[T]) extends CommandADT[Long]
+
+  case class SCARD(key: String) extends CommandADT[Long]
+
+  case class SDIFF[T](keys: NonEmptyList[String], _codec: Codec[T]) extends CommandADT[Set[T]]
+
+  case class SDIFFSTORE(destination: String, keys: NonEmptyList[String]) extends CommandADT[Long]
+
+  case class SINTER[T](keys: NonEmptyList[String], _codec: Codec[T]) extends CommandADT[Set[T]]
+
+  case class SINTERSTORE(destination: String, keys: NonEmptyList[String]) extends CommandADT[Long]
+
+  case class SISMEMBER[T](key: String, member: T, _codec: Codec[T]) extends CommandADT[Boolean]
+
+  case class SMEMBERS[T](key: String, _codec: Codec[T]) extends CommandADT[Set[T]]
+
+  case class SMOVE[T](source: String, destination: String, member: T, _codec: Codec[T]) extends CommandADT[Long]
+
+  case class SPOP[T](key: String, count: Long, _codec: Codec[T]) extends CommandADT[Set[T]]
+
+  case class SRANDMEMBER[T](key: String, count: Long, _codec: Codec[T]) extends CommandADT[Seq[T]]
+
+  case class SREM[T](key: String, members: NonEmptyList[T], _codec: Codec[T]) extends CommandADT[Long]
+
+  // case class SSCAN
+
+  case class SUNION[T](keys: NonEmptyList[String], _codec: Codec[T]) extends CommandADT[Set[T]]
+
+  case class SUNIONSTORE(destination: String, keys: NonEmptyList[String]) extends CommandADT[Long]
 }

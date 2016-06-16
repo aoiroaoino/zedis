@@ -8,8 +8,8 @@ object key extends KeyCommand
 
 trait KeyCommand {
 
-  def del(keys: String*): RedisCommand[Long] =
-    Free.liftF[CommandADT, Long](DEL(keys))
+  def del(key: String, keys: String*): RedisCommand[Long] =
+    Free.liftF[CommandADT, Long](DEL(nel(key, keys)))
 
   def dump(key: String): RedisCommand[Array[Byte]] =
     Free.liftF[CommandADT, Array[Byte]](DUMP(key))
