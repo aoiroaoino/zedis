@@ -1,4 +1,5 @@
 package zedis
+package util
 
 trait Codec[A] {
 

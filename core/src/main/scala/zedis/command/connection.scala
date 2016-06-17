@@ -2,7 +2,7 @@ package zedis
 package command
 
 import scalaz.Free
-import zedis.adt._
+import zedis.adt.CommandADT, CommandADT._
 
 object connection extends ConnectionCommand
 

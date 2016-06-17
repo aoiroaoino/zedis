@@ -2,14 +2,29 @@ package zedis
 package interp
 
 import scala.collection.JavaConverters._
+import scala.concurrent.{Future, ExecutionContext}
 
-import scalaz.{~>, Id, Applicative}
+import scalaz.{~>, Id}
 import scalaz.Id.Id
 import redis.clients.jedis.Jedis
 
-import zedis.adt._
+import zedis.adt.CommandADT, CommandADT._
+import zedis.util.Wrapper
 
-class JedisInterpreter[F[_]: Applicative](connection: Jedis) extends Interpreter[F] {
+class JedisInterpreter[F[_]: Wrapper](connection: Jedis) extends Interpreter[F] {
+
+  override def connectionProc[A] = {
+    case AUTH(password) =>
+      wrapF(connection.auth(password))
+    case ECHO(msg) =>
+      wrapF(connection.echo(msg))
+    case PING(_) =>
+      wrapF(connection.ping())
+    case QUIT =>
+      wrapF(connection.quit())
+    case SELECT(index) =>
+      wrapF(connection.select(index))
+  }
 
   override def hashesProc[A] = {
     case HDEL(key, fields) =>
@@ -43,8 +58,25 @@ class JedisInterpreter[F[_]: Applicative](connection: Jedis) extends Interpreter
     case HVALS(key, codec) =>
       wrapF(connection.hvals(key).asScala.map(codec.decode _))
   }
+
+  override def keysProc[A] = ???
+
+  override def listsProc[A] = ???
+
+  override def setsProc[A] = ???
+
+  override def stringsProc[A] = ???
+
+  override def unsupportedError[A] = {
+    case other => sys.error(s"$other is unsupported command in Jedis connection.")
+  }
 }
 
 object JedisInterpreter {
-  def apply(connection: Jedis): CommandADT ~> Id = new JedisInterpreter[Id](connection).impl
+
+  def apply[F[_]: Wrapper](connection: Jedis): CommandADT ~> F = new JedisInterpreter[F](connection).impl
+
+  def id(connection: Jedis): CommandADT ~> Id = apply[Id](connection)
+
+  def scalaFuture(connection: Jedis)(implicit ec: ExecutionContext): CommandADT ~> Future = apply[Future](connection)
 }

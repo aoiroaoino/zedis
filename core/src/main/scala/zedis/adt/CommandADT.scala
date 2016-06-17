@@ -1,10 +1,13 @@
 package zedis
+package adt
 
 import scalaz.NonEmptyList
+import zedis.util.Codec
 
-object adt {
+sealed trait CommandADT[+A]
 
-  sealed trait CommandADT[+A]
+object CommandADT {
+
 
   //
   // connection

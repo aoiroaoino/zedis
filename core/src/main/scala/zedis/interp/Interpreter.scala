@@ -1,11 +1,12 @@
 package zedis
 package interp
 
-import scalaz.{~>, Applicative}
+import scalaz.~>
 
 import zedis.adt.CommandADT
+import zedis.util.Wrapper
 
-class Interpreter[F[_]: Applicative] {
+class Interpreter[F[_]: Wrapper] {
 
   def impl: CommandADT ~> F = new (CommandADT ~> F) {
     def apply[A](adt: CommandADT[A]): F[A] = (proc[A] orElse unsupportedError)(adt)
@@ -59,5 +60,5 @@ class Interpreter[F[_]: Applicative] {
     case other => sys.error(s"""$other is unsupported command""")
   }
 
-  protected def wrapF[A](v: => A): F[A] = Applicative[F].point(v)
+  protected def wrapF[A](v: => A): F[A] = Wrapper[F].wrap(v)
 }

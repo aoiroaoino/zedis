@@ -2,7 +2,8 @@ package zedis
 package command
 
 import scalaz.Free
-import zedis.adt._
+import zedis.adt.CommandADT, CommandADT._
+import zedis.util.Codec
 
 object string extends StringCommand
 
