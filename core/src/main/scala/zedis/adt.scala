@@ -174,4 +174,57 @@ object adt {
   case class SUNION[T](keys: NonEmptyList[String], _codec: Codec[T]) extends CommandADT[Set[T]]
 
   case class SUNIONSTORE(destination: String, keys: NonEmptyList[String]) extends CommandADT[Long]
+
+  //
+  // strings
+  //
+
+  case class APPEND[T](key: String, value: T, _codec: Codec[T]) extends CommandADT[Long]
+
+  // case class BITCOUNT
+
+  // case class BITFIELD
+
+  // case class BITOP
+
+  // case class BITPOS
+
+  case class DECR(key: String) extends CommandADT[Long]
+
+  case class DECRBY(key: String, value: Long) extends CommandADT[Long]
+
+  case class GET[T](key: String, _codec: Codec[T]) extends CommandADT[Option[T]]
+
+  // case class GETBIT
+
+  case class GETRANGE(key: String, start: Long, end: Long) extends CommandADT[String]
+
+  case class GETSET[T](key: String, value: T, _codec: Codec[T]) extends CommandADT[T]
+
+  case class INCR(key: String) extends CommandADT[Long]
+
+  case class INCRBY(key: String, value: Long) extends CommandADT[Long]
+
+  case class INCRBYFLOAT(key: String, value: Double) extends CommandADT[Double]
+
+  case class MGET[T](keys: NonEmptyList[String], _codec: Codec[T]) extends CommandADT[Seq[Option[T]]]
+
+  case class MSET[T](map: Map[String, T], _codec: Codec[T]) extends CommandADT[String]
+
+  case class MSETNX[T](map: Map[String, T], _codec: Codec[T]) extends CommandADT[Long]
+
+  case class PSETEX[T](key: String, milliseconds: Long, value: T, _codec: Codec[T]) extends CommandADT[String]
+
+  // todo: support options
+  case class SET[T](key: String, value: T, _codec: Codec[T]) extends CommandADT[String]
+
+  // case class SETBIT
+
+  case class SETEX[T](key: String, seconds: Long, value: T, _codec: Codec[T]) extends CommandADT[String]
+
+  case class SETNX[T](key: String, value: T, _codec: Codec[T]) extends CommandADT[Long]
+
+  case class SETRANGE[T](key: String, offset: Long, value: T, _codec: Codec[T]) extends CommandADT[Long]
+
+  case class STRLEN(key: String) extends CommandADT[Long]
 }
