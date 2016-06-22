@@ -2,9 +2,11 @@ package zedis
 package adt
 
 import scalaz.NonEmptyList
-import zedis.util.Codec
 
-sealed trait CommandADT[+A]
+import zedis.util.Codec
+import zedis.command.list.Position
+
+sealed trait CommandADT[A]
 
 object CommandADT {
 
@@ -67,19 +69,19 @@ object CommandADT {
 
   case class EXISTS(key: String) extends CommandADT[Boolean]
 
-  case class EXPIRE(key: String, seconds: Long) extends CommandADT[Boolean]
+  case class EXPIRE(key: String, seconds: Long) extends CommandADT[Long]
 
-  case class EXPIREAT(key: String, unixTime: Long) extends CommandADT[Boolean]
+  case class EXPIREAT(key: String, unixTime: Long) extends CommandADT[Long]
 
   case class KEYS(pattern: String) extends CommandADT[Set[String]]
 
   // case class MIGRATE
 
-  case class MOVE(key: String, dbIndex: Int) extends CommandADT[Boolean]
+  case class MOVE(key: String, dbIndex: Int) extends CommandADT[Long]
 
   // case class OBJECT
 
-  case class PERSIST(key: String) extends CommandADT[Boolean]
+  case class PERSIST(key: String) extends CommandADT[Long]
 
   case class PEXPIRE(key: String, milliseconds: Long) extends CommandADT[Long]
 
@@ -89,9 +91,9 @@ object CommandADT {
 
   case object RANDOMKEY extends CommandADT[String]
 
-  case class RENAME(oldKey: String, newKey: String) extends CommandADT[String]
+  case class RENAME(key: String, newKey: String) extends CommandADT[String]
 
-  case class RENAMENX(oldKey: String, newKey: String) extends CommandADT[Boolean]
+  case class RENAMENX(key: String, newKey: String) extends CommandADT[Long]
 
   case class RESTORE(key: String, milliseconds: Long, data: Array[Byte]) extends CommandADT[String]
 
@@ -101,8 +103,7 @@ object CommandADT {
 
   case class TTL(key: String) extends CommandADT[Long]
 
-  // type is reserved word ...
-  case class VALUETYPE(key: String) extends CommandADT[String]
+  case class TYPE(key: String) extends CommandADT[String]
 
   // case class WAIT
 
@@ -118,7 +119,7 @@ object CommandADT {
 
   case class LINDEX[T](key: String, index: Long, _codec: Codec[T]) extends CommandADT[Option[T]]
 
-  case class LINSERT[T](key: String, position: String, pivot: T, value: T, _codec: Codec[T]) extends CommandADT[Long]
+  case class LINSERT[T](key: String, position: Position, pivot: T, value: T, _codec: Codec[T]) extends CommandADT[Long]
 
   case class LLEN(key: String) extends CommandADT[Long]
 

@@ -8,8 +8,14 @@ import zedis.util.Codec
 object list extends ListCommand {
   // for linsert
   sealed abstract class Position(val show: String)
-  case object Before extends Position("before")
-  case object After extends Position("after")
+  object Position {
+    case object Before extends Position("before")
+    case object After extends Position("after")
+
+    val values = Seq(Before, After)
+    def from(s: String): Option[Position] = values.find(_.show == s)
+  }
+
 }
 
 trait ListCommand {
@@ -25,7 +31,7 @@ trait ListCommand {
     Free.liftF[CommandADT, Option[T]](LINDEX(key, index, Codec[T]))
 
   def linsert[T: Codec](key: String, position: Position, pivot: T, value: T): RedisCommand[Long] =
-    Free.liftF[CommandADT, Long](LINSERT(key, position.show, pivot, value, Codec[T]))
+    Free.liftF[CommandADT, Long](LINSERT(key, position, pivot, value, Codec[T]))
 
   def llen(key: String): RedisCommand[Long] =
     Free.liftF[CommandADT, Long](LLEN(key))
