@@ -28,14 +28,14 @@ lazy val warnUnusedImport = Seq(
   scalacOptions in (Test, console) <<= (scalacOptions in (Compile, console))
 )
 
-val scalazVersion     = "7.2.3"
-val scalaredisVersion = "3.0"
-val jedisVersion      = "2.8.0"
+val scalazVersion     = "7.2.6"
+val scalaredisVersion = "3.2"
+val jedisVersion      = "2.9.0"
 
 val scalaz_core  = "org.scalaz"                 %% "scalaz-core"  % scalazVersion
 val monocle_core = "com.github.julien-truffaut" %% "monocle-core" % "1.2.2"
 
-val scalatest    = "org.scalatest"              %% "scalatest"    % "2.2.5" % "test"
+val scalatest    = "org.scalatest"              %% "scalatest"    % "3.0.0" % "test"
 
 lazy val root = (project in file("."))
   .settings(moduleName := "zedis")
